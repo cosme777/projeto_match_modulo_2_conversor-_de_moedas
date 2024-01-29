@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Conversor de Moedas</title>
+    <style>
+     
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0px;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            background-color: #010232;
+            color:  #edf2f3;
+        }
+
+        h1,
+        h2 {
+            text-align: center;
+            color:  #edf2f3;
+        }
+
+        #container {
+            display: flex;
+            justify-content: space-between;
+            flex-grow: 1; /* Faz com que o container cresça para ocupar o espaço restante */
+        }
+
+        #pesquisa {
+            margin-top: 35px;
+            flex: 1;
+            margin-right: 20px;
+        }
+
+        #historico {
+            flex: 1;
+            align-items: center;
+        }
+
+        form {
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        select,
+        input {
+            width: 92%;
+            padding: 8px;
+            margin-bottom: 10px;
+        }
+
+        input{width: 350px;}
+
+        #limpar {
+            background-color: #37b878;
+            width: 150px;
+            margin-left:20%;         
+
+        }
+        
+        
+        button {
+            background-color: #4285f4;
+            color: white;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 150px;
+            margin-top: 10px;
+        }
+
+        #historico table {
+            width: 70%;
+            border-collapse: collapse;
+            margin-top: 50px;
+        }
+
+        #historico th,
+        #historico td {
+            border: 1px solid #ddd;
+            padding: 3px 0 3px 0;
+            text-align: center;
+            font-size: 0.8em;
+        }
+
+        #historico th {
+            background-color: #4285f4;
+            color: white;
+        }
+
+
+        #historico td {
+            background-color:white;
+            color: #4285f4;
+        }
+
+
+        footer {
+            background-color: black !important;
+            /* margin-top: 10px; */
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+        }
+
+        .footer {
+            column-count: 3;
+            column-gap: 30px;
+            column-rule-style: solid;
+            column-rule-width: 1px;
+            column-rule-color: rgb(55, 56, 56);
+        }
+
+        .time {
+            display: flex;
+            flex-direction: column;
+            padding: 5px 0 2px 25%;
+        }
+
+        .div_historico{display:flex}
+        
+        #limpar1 {
+            background-color: #37b878;
+            width: 150px;
+            height: 30%;
+            transform: translate(50%, 150%);
+
+        }
+
+      
+
+    </style>
+</head>
+
+<body>
+    <h3 style="color: #01c7f0;font-weight: 900;text-align:start;margin-left: 10px;">MASTERTECH / MÓDULO 2 - Turma/Set-23<span style="color: #edf2f3;font-weight: 400;margin-top:-13px;text-align:start;margin-left: 10px">-  Conversor de Moedas</span></h3>
+    <span style="border-bottom: 1px solid;"></span>
+    <!-- <h4 style="color: #edf2f3;font-weight: 400;margin-top:-13px;text-align:start;margin-left: 10px;margin-bottom: 5px; margin-top:15PX ;">Conversor de Moedas</h4> -->
+
+ 
+    <div id="container">
+        <div id="pesquisa">
+            <form action="/converter" method="post">
+                <label for="valor">Valor a ser convertido:</label>
+                <input placeholder="Digite Apenas Números..." name="valor" required
+                    value="{{ request.form['valor'] if request.form['valor'] is defined else '' }}">
+
+                <label for="moeda_entrada">Moeda de Origem:</label>
+                <select name="moeda_entrada" required>
+                    {% for moeda in moedas %}
+                    <option value="{{ moeda }}">{{ moeda }}</option>
+                    {% endfor %}
+                </select>
+
+                <label for="moeda_origem">Moeda de Destino:</label>
+                <select name="moeda_origem" required>
+                    {% for moeda in moedas %}
+                    <option value="{{ moeda }}">{{ moeda }}</option>
+                    {% endfor %}
+                </select>
+
+                <button type="submit">Converter</button>
+            </form>
+            <!-- <button id="limpar" onclick="location.href='/limpar'">Limpar Formulário</button> -->
+
+
+            {% if erro %}
+            <p
+                style="color:white;text-align: center;background-color:rgb(214, 30, 30);padding: 15px 5px 15px 5px;width:350px;margin: 30px auto;border-radius: 15px;font-weight:bolder;font-size: large;margin-left:23%;">
+                Por favor, insira um valor inteiro.</p>
+            {% endif %}
+
+        </div>
+
+        <div id="historico">
+            <div class="div_historico">
+                <table>
+                    <thead>
+                        <tr>
+                            <th style="font-size: 15px;" colspan="6">Histórico de Simulações</th>
+                        </tr>
+                        <tr>
+                            <th>$ Origem</th>
+                            <th>$ Destino</th>
+                            <th>Valor</th>
+                            <th>Taxa</th>
+                            <th>Conversão</th>
+                            <th>Consulta</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for simulacao in historico_simulacoes %}
+                        <tr>
+                            <td>{{ simulacao['moeda_entrada'] }}</td>
+                            <td>{{ simulacao['moeda_origem'] }}</td>
+                            <td>{{ simulacao['valor'] }} {{ simulacao['moeda_entrada'] }}</td>
+                            <td>{{ simulacao['taxa_conversao'] }}</td>
+                            <td>{{ simulacao['valor_convertido'] }} {{ simulacao['moeda_origem'] }}</td>
+                            <td>{{ simulacao['data_atual'] }}</td>
+                        </tr>
+                        {% endfor %}
+
+                    </tbody>
+                </table>
+                <button id="limpar1" onclick="location.href='/limpar'">Limpar Histórico</button>
+            </div>
+        </div>
+    </div>
+
+   
+    <footer>
+        <div class="footer">
+            <div class="time">
+                <p style="margin-top: 10px;margin-bottom: -3px;">Cosme dos Santos</p>
+                <p style="margin-bottom:2px;font-weight: 200;margin-bottom: -12px;font-size: 13px">Contato: (11) 97465-9182</p>
+                <p style="font-weight: 100;font-size: 13px;">E-mail: cgps777@gmail.com</p>
+            </div>
+
+            <div class="time">
+                <p style="margin-top: 10px;margin-bottom: -3px;">Antônio Lima Neto</p>
+                <p style="margin-bottom:2px;font-weight: 200;margin-bottom: -12px;font-size: 13px">Contato: (81) 98961-5857</p>
+                <p style="font-weight: 100;font-size: 13px;">E-mail: antoniojosedelimaneto@gmail.com</p>
+            </div>
+
+            <div class="time">
+                <p style="margin-top: 10px;margin-bottom: -3px;">Nathallya dos Santos</p>
+                <p style="margin-bottom:2px;font-weight: 200;margin-bottom: -12px;font-size: 13px">Contato: (11) 94853-8038</p>
+                <p style="font-weight: 100;font-size: 13px;">E-mail: nathallyandrea7@gmail.com</p>
+            </div>
+        </div>
+        <marquee style="margin-top: -5x; color: #74daa7;font-size: 10px;" behavior="" direction="">FINALIZAÇÃO :::
+            PROJETO - MOD2 - MASTERTECH</marquee> 
+    </footer>
+</body>
+
+</html>
