@@ -17,12 +17,19 @@ def index():
 @app.route('/converter', methods=['POST'])
 def converter():
     try:
-        valor = int(request.form['valor'])
+        # Substituir vírgulas por pontos no valor de entrada
+        valor_input = request.form['valor'].replace(',', '.')
+        valor = float(valor_input)
     except ValueError:
         return render_template('index.html', moedas=MOEDAS, historico_simulacoes=historico_simulacoes, erro=True)
 
+
     moeda_entrada = request.form['moeda_entrada']
     moeda_origem = request.form['moeda_origem']
+
+    ### Implementado - - Verifica se as moedas selecionadas são válidas
+    if moeda_entrada == "Escolha a moeda" or moeda_origem == "Escolha a moeda":
+         return render_template('index.html', moedas=MOEDAS, historico_simulacoes=historico_simulacoes, erro_moeda=True)
 
     # Obtém a taxa de conversão
     url = f"https://api.exchangerate-api.com/v4/latest/{moeda_entrada}"
