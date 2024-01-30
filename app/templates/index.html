@@ -7,7 +7,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Conversor de Moedas</title>
     <style>
-     
         body {
             font-family: Arial, sans-serif;
             margin: 0px;
@@ -15,19 +14,20 @@
             flex-direction: column;
             min-height: 100vh;
             background-color: #010232;
-            color:  #edf2f3;
+            color: #edf2f3;
         }
 
         h1,
         h2 {
             text-align: center;
-            color:  #edf2f3;
+            color: #edf2f3;
         }
 
         #container {
             display: flex;
             justify-content: space-between;
-            flex-grow: 1; /* Faz com que o container cresça para ocupar o espaço restante */
+            flex-grow: 1;
+            /* Faz com que o container cresça para ocupar o espaço restante */
         }
 
         #pesquisa {
@@ -58,16 +58,18 @@
             margin-bottom: 10px;
         }
 
-        input{width: 350px;}
+        input {
+            width: 350px;
+        }
 
         #limpar {
             background-color: #37b878;
             width: 150px;
-            margin-left:20%;         
+            margin-left: 20%;
 
         }
-        
-        
+
+
         button {
             background-color: #4285f4;
             color: white;
@@ -98,12 +100,10 @@
             color: white;
         }
 
-
         #historico td {
-            background-color:white;
+            background-color: white;
             color: #4285f4;
         }
-
 
         footer {
             background-color: black !important;
@@ -127,8 +127,10 @@
             padding: 5px 0 2px 25%;
         }
 
-        .div_historico{display:flex}
-        
+        .div_historico {
+            display: flex
+        }
+
         #limpar1 {
             background-color: #37b878;
             width: 150px;
@@ -137,23 +139,54 @@
 
         }
 
-      
+        .Regra_Programa {
+            margin: 5px 0 10px 0;
+            width: 87%;
+            color: #edf2f3;
+            padding: 0 10px;
+            border-radius: 15px;
+            border: 1px solid #37b878;
+        }
 
+        .Regra_Programa h3 {
+            text-align: center;
+            font-size: 13px;
+        }
+
+        .Regra_Programa p {
+            font-size: 12px;
+            text-align: justify;
+        }
     </style>
 </head>
 
 <body>
-    <h3 style="color: #01c7f0;font-weight: 900;text-align:start;margin-left: 10px;">MASTERTECH / MÓDULO 2 - Turma/Set-23<span style="color: #edf2f3;font-weight: 400;margin-top:-13px;text-align:start;margin-left: 10px">-  Conversor de Moedas</span></h3>
+    <h3 style="color: #01c7f0;font-weight: 900;text-align:start;margin-left: 10px;">MASTERTECH / MÓDULO 2 -
+        Turma/Set-23<span style="color: #edf2f3;font-weight: 400;margin-top:-13px;text-align:start;margin-left: 10px">-
+            Conversor de Moedas</span></h3>
     <span style="border-bottom: 1px solid;"></span>
     <!-- <h4 style="color: #edf2f3;font-weight: 400;margin-top:-13px;text-align:start;margin-left: 10px;margin-bottom: 5px; margin-top:15PX ;">Conversor de Moedas</h4> -->
+    <!-- Regra para uso do Programa -->
 
- 
+
     <div id="container">
+
         <div id="pesquisa">
             <form action="/converter" method="post">
                 <label for="valor">Valor a ser convertido:</label>
                 <input placeholder="Digite Apenas Números..." name="valor" required
                     value="{{ request.form['valor'] if request.form['valor'] is defined else '' }}">
+
+                {% if erro %}
+                <div class="Regra_Programa">
+                    <h3>Valor inválido</h3>
+                    <p>Dicas:</p>
+                    <p>Para valor: R$ 1.500,50 - Utilizar: 1500,50</p>
+                    <p>Para valor: 150.000,50 - Utilizar: 150000,50</p>
+                    <p>Consultar valor 1.500.000,50 - Utilizar 1500000,00</p>
+                </div>
+                {% endif %}
+
 
                 <label for="moeda_entrada">Moeda de Origem:</label>
                 <select name="moeda_entrada" required>
@@ -162,6 +195,7 @@
                     {% endfor %}
                 </select>
 
+
                 <label for="moeda_origem">Moeda de Destino:</label>
                 <select name="moeda_origem" required>
                     {% for moeda in moedas %}
@@ -169,16 +203,31 @@
                     {% endfor %}
                 </select>
 
+                {% if erro_moeda %}
+
+                <div class="Regra_Programa">
+                    <h3>Preencha os dois Campos Moeda</h3>
+                <h3>Depois clique em Converter.</h3>
+                 
+                </div>
+
+                {% endif %}
+
                 <button type="submit">Converter</button>
             </form>
             <!-- <button id="limpar" onclick="location.href='/limpar'">Limpar Formulário</button> -->
 
 
-            {% if erro %}
+            <!-- {% if erro %}
             <p
                 style="color:white;text-align: center;background-color:rgb(214, 30, 30);padding: 15px 5px 15px 5px;width:350px;margin: 30px auto;border-radius: 15px;font-weight:bolder;font-size: large;margin-left:23%;">
-                Por favor, insira um valor inteiro.</p>
-            {% endif %}
+                Substitua "Vírgula por Ponto".</p>
+            {% endif %} -->
+
+            <!-- {% if erro_moeda %}
+            <p style="color:yellow;text-align: center;background-color:rgb(214, 30, 30);padding: 15px 5px 15px 5px;width:350px;margin: 30px auto;border-radius: 15px;font-weight:bolder;font-size: large;margin-left:23%;">
+                Por favor, escolha uma moeda válida.</p>
+            {% endif %} -->
 
         </div>
 
@@ -214,32 +263,45 @@
                 </table>
                 <button id="limpar1" onclick="location.href='/limpar'">Limpar Histórico</button>
             </div>
+
         </div>
     </div>
+    <!-- <div class="Regra_Programa">
+        <h3>Regra de Uso</h3>
+        <p>O Campo valor não aceita letras, símbolos ou caracteres especiais.</p>
+        <p>Os dois Campos moedas estarem preenchidos.</p>
+        <h3>Exemplo</h3>
+        <p>Para valor: R$ 1.500,50 - Utilizar: 1500,50</p>
+        <p>Para valor: 1.500,50    - Utilizar: 1500,50"</p>
+        <p>Consultar valor 1.500.000,00 - "Utilizar 1500000,00"</p>
+    </div> -->
 
-   
+
     <footer>
         <div class="footer">
             <div class="time">
                 <p style="margin-top: 10px;margin-bottom: -3px;">Cosme dos Santos</p>
-                <p style="margin-bottom:2px;font-weight: 200;margin-bottom: -12px;font-size: 13px">Contato: (11) 97465-9182</p>
+                <p style="margin-bottom:2px;font-weight: 200;margin-bottom: -12px;font-size: 13px">Contato: (11)
+                    97465-9182</p>
                 <p style="font-weight: 100;font-size: 13px;">E-mail: cgps777@gmail.com</p>
             </div>
 
             <div class="time">
                 <p style="margin-top: 10px;margin-bottom: -3px;">Antônio Lima Neto</p>
-                <p style="margin-bottom:2px;font-weight: 200;margin-bottom: -12px;font-size: 13px">Contato: (81) 98961-5857</p>
+                <p style="margin-bottom:2px;font-weight: 200;margin-bottom: -12px;font-size: 13px">Contato: (81)
+                    98961-5857</p>
                 <p style="font-weight: 100;font-size: 13px;">E-mail: antoniojosedelimaneto@gmail.com</p>
             </div>
 
             <div class="time">
                 <p style="margin-top: 10px;margin-bottom: -3px;">Nathallya dos Santos</p>
-                <p style="margin-bottom:2px;font-weight: 200;margin-bottom: -12px;font-size: 13px">Contato: (11) 94853-8038</p>
+                <p style="margin-bottom:2px;font-weight: 200;margin-bottom: -12px;font-size: 13px">Contato: (11)
+                    94853-8038</p>
                 <p style="font-weight: 100;font-size: 13px;">E-mail: nathallyandrea7@gmail.com</p>
             </div>
         </div>
         <marquee style="margin-top: -5x; color: #74daa7;font-size: 10px;" behavior="" direction="">FINALIZAÇÃO :::
-            PROJETO - MOD2 - MASTERTECH</marquee> 
+            PROJETO - MOD2 - MASTERTECH</marquee>
     </footer>
 </body>
 
