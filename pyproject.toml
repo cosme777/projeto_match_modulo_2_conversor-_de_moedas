@@ -2,7 +2,7 @@
 name = "flask-simple-fullstack-template"
 version = "0.1.0"
 description = "A simple Flask fullstack template."
-authors = ["ArielMAJ <ariel.maj@hotmail.com>"]
+authors = ["CosmeSantos <cgps777@gmail.com>"]
 license = "MIT"
 readme = "README.md"
 
